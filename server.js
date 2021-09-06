@@ -24,9 +24,6 @@ app.use(morgan("dev"))
 app.use('/api/auth',authRouter)
 app.use('/api/users',usersRouter)
 app.use('/api/forums',forumRouter)
-app.get('/',(req,res)=>{
-    res.send('Hello World')
-})
 
 let port = process.env.PORT
 
