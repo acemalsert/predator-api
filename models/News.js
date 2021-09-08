@@ -9,9 +9,15 @@ const NewsSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    NewsImg:{
-        type:Image,
+    imgUrl:{
+        type:String,
     },
+    category:{
+        type:Number,
+        min:1,
+        max:4,
+        required:true,
+    }
 },
 {
     timestamps:true
