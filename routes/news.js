@@ -2,45 +2,6 @@ const express = require('express')
 const router = express.Router()
 const News = require('../models/News')
 const User = require('../models/Users')
-const multer = require('multer')
-
-const diskStorage = multer.diskStorage({
-    destination:function(req,file,cb){
-        cb(null,'./uploads/')
-    },
-    filename:function(req,file,cb){
-        let filename = Date.now()+file.originalname
-        cb(null,filename)
-    }
-})
-
-function fileFilter (req, file, cb) {
-    const check = async ()=>{
-        try {
-            const user = await User.findById(req.body.userId)
-            if(user){
-                if(Boolean(user.isAdmin) === true && (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "image/svg")){
-                    cb(null, true)
-                }
-                else{
-                    cb(null, true)
-                }
-            }  
-        } catch (error) {
-            console.log(error)
-        } 
-    }
-    check()
-}
-const upload = multer(
-    {
-        storage:diskStorage,
-        limits:{
-            fileSize:1024*1024*4
-        },
-        fileFilter:fileFilter,
-    }) 
-
 router.get('/valorant',async (req,res)=>{
     try {
         const valorantNews = await News.find({category:1})
@@ -110,13 +71,14 @@ router.get('/:category/:title',async (req,res)=>{
         return res.status(500).json(error)
     }
 })
-router.post('/addNews',upload.single('news_image'),async(req,res)=>{
+router.post('/addNews',async(req,res)=>{
     try {
-        if(req.file){
+        const user =  await User.findById(req.body.userId)
+        if (user && Boolean(user.isAdmin) === true){
             const newNews = new News({
                 title:req.body.title,
                 desc:req.body.desc,
-                imgUrl:req.file.path,
+                imgUrl:req.body.imgUrl,
                 category:req.body.category,
             })
             await newNews.save()
