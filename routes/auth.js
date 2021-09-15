@@ -32,7 +32,7 @@ router.post('/login',async (req,res)=>{
             return res.status(400).send({msg:'Username or password is wrong!',status:'400'})
         }
 
-        return res.status(200).json('Login Successful')
+        return res.status(200).json(user)
         
     } catch (error) {
         return res.status(500).send({msg:error})

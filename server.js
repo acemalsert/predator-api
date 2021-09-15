@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const mongoose = require('mongoose')
 const helmet = require('helmet')
 const dotenv = require('dotenv')
+const cors = require('cors')
 
 const authRouter = require('./routes/auth')
 const usersRouter = require('./routes/user')
@@ -18,7 +19,13 @@ mongoose.connect(process.env.MONGO_URL)
     console.log('Connected to the database')
 })
 
+const corsOptions = {
+    origin:"http://localhost:3000",
+    optionSuccessStatus:200
+}
+
 //req->middleware->res
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use(helmet())
 app.use(morgan("dev"))
